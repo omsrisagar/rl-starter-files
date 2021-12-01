@@ -8,7 +8,7 @@ import torch_ac
 # Function from https://github.com/ikostrikov/pytorch-a2c-ppo-acktr/blob/master/model.py
 def init_params(m):
     classname = m.__class__.__name__
-    if classname.find("Linear") != -1:
+    if classname.find("Linear") != -1: # considering only Linear layers
         m.weight.data.normal_(0, 1)
         m.weight.data *= 1 / torch.sqrt(m.weight.data.pow(2).sum(1, keepdim=True))
         if m.bias is not None:
@@ -92,11 +92,11 @@ class ACModel(nn.Module, torch_ac.RecurrentACModel):
             embedding = x
 
         if self.use_text:
-            embed_text = self._get_embed_text(obs.text)
+            embed_text = self._get_embed_text(obs.text) # seems like always same for each step (can be optimized)
             embedding = torch.cat((embedding, embed_text), dim=1)
 
         x = self.actor(embedding)
-        dist = Categorical(logits=F.log_softmax(x, dim=1))
+        dist = Categorical(logits=F.log_softmax(x, dim=1)) # applies softmax followed by logarithm
 
         x = self.critic(embedding)
         value = x.squeeze(1)

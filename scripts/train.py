@@ -157,7 +157,7 @@ while num_frames < args.frames:
     update_end_time = time.time()
 
     num_frames += logs["num_frames"]
-    update += 1
+    update += 1 # each update = 4 epochs of 2048 frame experiences (128 frames per proc x 16 indep. procs) training
 
     # Print logs
 
